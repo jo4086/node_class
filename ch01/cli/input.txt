@@ -1,0 +1,7 @@
+apple is a fruit
+banana is yellow
+keyword: orange is sweet
+grape is tasty
+keyword: apple pie is delicious
+cherry is red
+
