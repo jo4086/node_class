@@ -1,0 +1,1 @@
+import { odd, even } from ''
