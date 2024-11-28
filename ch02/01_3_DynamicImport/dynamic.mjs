@@ -1,4 +1,4 @@
-const a = ture
+const a = true
 
 /*
 if (a) {
