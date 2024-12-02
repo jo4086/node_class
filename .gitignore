@@ -1,0 +1,5 @@
+# Node.js 패키지 디렉토리
+# node_modules/
+
+# npm 설치 관련 파일
+# package-lock.json
