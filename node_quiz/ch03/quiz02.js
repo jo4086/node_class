@@ -3,7 +3,7 @@ const app = express()
 const bodyParser = require('body-parser')
 
 // JSON 요청 본문 처리를 위한 body-parser 미들웨어 설정
-app.use(bodyParser.___())
+app.use(bodyParser.json())
 
 app.post('/data', (req, res) => {
    res.send(`Received data: ${JSON.stringify(req.body)}`)

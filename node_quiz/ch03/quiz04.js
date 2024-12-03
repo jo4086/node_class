@@ -8,7 +8,7 @@ app.get('/', (req, res) => {
 // 오류 처리 미들웨어
 app.use((err, req, res, next) => {
    console.error(err.stack)
-   res.status(___).send({ error: err.message })
+   res.status(500).send({ error: err.message })
 })
 
 app.listen(3000, () => console.log('Server running on http://localhost:3000'))
