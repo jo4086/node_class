@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Document</title>
+   </head>
+   <body>
+      <!--
+        * GET : 데이터를 주소의 쿼리스트링에 보냄
+        *         오픈, 보안성 낮음, 데이터가 적은경우 사용 -->
+      <!-- 
+        * POST : 데이터를 body 영역에 숨겨서 보냄
+        *         히든, 보안성 높음, 데이터가 큰 경우 좋음 -->
+      <form method="POST" action="/submit">
+         <input type="text" name="name" />
+         <input type="text" name="age" />
+         <button type="submit">Submit</button>
+      </form>
+   </body>
+</html>

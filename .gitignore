@@ -3,3 +3,6 @@ node_modules/
 
 # npm 설치 관련 파일
 package-lock.json
+
+#.env
+# .env
