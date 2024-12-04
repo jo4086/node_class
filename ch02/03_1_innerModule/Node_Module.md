@@ -109,34 +109,62 @@
          **`ex) 192.168.1.1`**
       -  **IPv6** : 콜론( _:_ )으로 구분된 4자리 16진수 8그룹 구성\
          **`ex) 2001:0db8:85a3:0000:0000:8a2e:0370:7334`**
-      -  `예시 코드`
+      -  **예시 코드**
 
          ```
          console.log(os.networkInterfaces());
 
-         /** result
+         /* [▼ result]
           * {
           *   lo: [
           *     { address: '127.0.0.1',
-          *       netmask: '255.0.0.0'
-          *       family: 'IPv4', ...},
-          *    ],
+          *       netmask: '255.0.0.0',
+          *       family: 'IPv4',
+          *       mac: '00:00:00:00:00:00',
+          *       internal: true
+          *     }
+          *   ],
           *   eth0: [
           *     { address: '192.168.0.100',
-          *       netmask: '255.255.255.0'
-          *       family: 'IPv4', ...},
-          *    ]
+          *       netmask: '255.255.255.0',
+          *       family: 'IPv4',
+          *       mac: 'aa:bb:cc:dd:ee:ff',
+          *       internal: false
+          *     }
+          *   ]
           * }
           **/
          ```
 
 #### 6. 시스템 부하 정보
 
--  `os.loadavg()`
+-  **`os.loadavg()`**
+
    -  **Linux/Unix에서만 유효**하며, Windows에서는 [0, 0, 0]을 반환
    -  시스템의 평균 부하(1분, 5분, 15분 기준)를 반환
    -  ```
       console.log(os.loadavg());
-      // result
-      // [0.34, 0.45, 0.60]
+
+      /* [▼ result]
+       * [0.34, 0.45, 0.60]
+       * - 1분: 0.34
+       * - 5분: 0.45
+       * - 15분: 0.60
+       **/
+      ```
+
+#### 7. 상수 정보
+
+-  **`os.constants`**
+
+   -  파일 시스템, 신호, 오류 코드 등의 상수를 포함
+   -  **예시 코드**
+
+      ```
+      console.log(os.constants.signals.SIGINT);
+
+      /* [▼ result]
+       * SIGINT: 2
+       * ENOENT: -2
+       **/
       ```
