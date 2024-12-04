@@ -4,4 +4,6 @@ const students = [
    { id: 3, name: 'Charlie', grade: 'C' },
 ]
 
+console.table(students)
+
 // 조건: students 데이터를 표로 출력하세요.
