@@ -1,6 +1,20 @@
-# 시퀄라이저
+# 시퀄라이저 (Sequelize)
 
 객체 - 데이터베이스를 연결하는 역할
+
+-  ### 시퀄라이저 (Sequelize) 구성 클래스
+
+   -  **Model**
+      -  데이터베이스 테이블을 매핑하고 조작하는 데 사용되는 클래스.
+      -  확장해서 테이블 구조와 관계를 정의할 수 있음.
+      -  _메서드(method)_
+         1. init(): 모델 초기화 및 테이블 구조 정의
+         2. findAll(), findOne(): 데이터 조회
+         3. create(), update(), destroy(): 데이터 조작
+   -  **DataTypes**
+      -  각 테이블의 필드 타입을 정의하는 데 사용
+      -  주요 데이터 타입
+         -  `STRING`, `INTEGER`, `BOOLEAN`, `TEXT`, `DATE`, `FLOAT`, `DECIMAL` 등
 
 -  ### ORM(Object Relational Mapping)
 
@@ -73,6 +87,14 @@ npm install
 
 ### 관계 정의
 
+-  1:N or 1:1 관계
+
+   -  받는자(자식): belongsTo(1)
+   -  주는자(부모): hasMany(N), hasOne(1)
+
+-  N:M 관계
+   -  주고받기 : belongsToMany
+
 ```diff
 ! user.js
 + User는 comment를 많이 가지고 있다(부모다)
@@ -93,8 +115,8 @@ npm install
          targetKey: 'id', // Comment가 User에서 참조할 컬럼 이름
       })
    }
-
-
 ```
+
+-  1:1 관계 (belongsTo(자식) - hasOne(부모))
 
 -  package.json의 스크립트에 `"start": "nodemon app.js",`를 추가하면 npm start로 실행 가능
