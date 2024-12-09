@@ -14,7 +14,7 @@ const authMiddleware = (req, res, next) => {
     const token = '12345'
     if (token === '12345') {
         console.log('인증성공!')
-        next()
+    w    next()
     }
 }
 
