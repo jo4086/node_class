@@ -4,14 +4,14 @@
 
 -  ### 시퀄라이저 (Sequelize) 구성 클래스
 
-   -  **Model**
+   -  **1. Model**
       -  데이터베이스 테이블을 매핑하고 조작하는 데 사용되는 클래스.
       -  확장해서 테이블 구조와 관계를 정의할 수 있음.
       -  _메서드(method)_
          1. init(): 모델 초기화 및 테이블 구조 정의
          2. findAll(), findOne(): 데이터 조회
          3. create(), update(), destroy(): 데이터 조작
-   -  **DataTypes**
+   -  **2. DataTypes**
       -  각 테이블의 필드 타입을 정의하는 데 사용
       -  주요 데이터 타입
          -  `STRING`, `INTEGER`, `BOOLEAN`, `TEXT`, `DATE`, `FLOAT`, `DECIMAL` 등
@@ -89,11 +89,12 @@ npm install
 
 -  1:N or 1:1 관계
 
-   -  받는자(자식): belongsTo(1)
-   -  주는자(부모): hasMany(N), hasOne(1)
+   -  받는자(자식, targetKey): belongsTo(1)
+   -  주는자(부모, sourceKey): hasMany(N), hasOne(1)
 
 -  N:M 관계
    -  주고받기 : belongsToMany
+   -  교차테이블 : `{through: '교차테이블'}`
 
 ```diff
 ! user.js
@@ -120,3 +121,64 @@ npm install
 -  1:1 관계 (belongsTo(자식) - hasOne(부모))
 
 -  package.json의 스크립트에 `"start": "nodemon app.js",`를 추가하면 npm start로 실행 가능
+
+##
+
+### 시퀄라이저를 통한 MySQL 테이블 생성 및 RESTful 상호작용
+
+RESTful 설명 링크: https://velog.io/@somday/RESTful-API-%EC%9D%B4%EB%9E%80
+
+가상 Request 호출 : https://hoppscotch.com/download
+
+호프스카치를 이용해 가상으로 RESTful API 통신 호출
+
+1. [**테이블 생성 (mkdir - models/)**](#1-테이블-생성-mkdir---midels)
+2. [**라우트 생성 (mkdir - routes/)**](#2-라우트-생성-mkdir---routes)
+3. [**app.js의 다양한 미들웨어 처리**](#3-appjs의-다양한-미들웨어-처리)
+
+#### 1. 테이블 생성 (mkdir - midels/)
+
+-  Sequelize를 사용하여 MySQL 데이터베이스에 TABLE생성 및 `1:1, 1:N, N:M` 관계 구현,
+
+-  **index.js** : 모델들의 관계 설정 및 DB 동기화
+
+-  **테이블 작성**
+   -  **1:N 테이블**\
+       ├─ `comments` **<=(제공)=** `users`\
+       ├─ `comment.js: (belongsTo - targetKey)`\
+       └─ `user.js: (hasMany - sourceKey)`
+   -  **1:1 테이블**\
+       ├─ `capitals` **<=(제공)=** `countries`\
+       ├─ `capital.js (belongsTo - targetKey)`\
+       └─ `country.js (hasOne - sourceKey)`
+   -  **N:M 테이블**\
+       ├─ `posts` **=>( `posthashting` )<=** `hashtags`\
+       ├─ `post.js (belongsToMany)`\
+       ├─ `hashtag.js (belongsToMany)`\
+       └─ `{through: posthashting}`
+
+#### 2. 라우트 생성 (mkdir - routes/)
+
+-  CRUD와 HTTP 매서드의 관계\
+    => RESTful API 요청은 CRUD작업과 연결됌\
+    => 클라이언트는 HTTP 매서드를 사용하여 서버에 CRUD 작업을 요청\
+    => 서버는 이를 수행하여 데이터베이스와 상호작용.
+
+| CRUD 작업 | HTTP 메서드 | 설명          |
+| --------- | ----------- | ------------- |
+| Create    | POST        | 데이터를 생성 |
+| Read      | GET         | 데이터를 읽기 |
+| Update    | PATCH / PUT | 데이터를 수정 |
+| Delete    | DELETE      | 데이터를 삭제 |
+
+-  models - **`comment.js & user.js`** 테이블의 **`RESTful`** 상호작용 구현
+-  **routes/**
+   -  index.js: 라우트 중앙 관리파일
+   -  comments.js: 댓글 모델의 CRUD 처리 (`../models/comment`의 라우트 파일)
+   -  users.js: 사용자 모델의 CRUD 처리 (`../models/user`이 라우트 파일)
+
+#### 3. app.js의 다양한 미들웨어 처리
+
+##
+
+findAll() = select \* from users;

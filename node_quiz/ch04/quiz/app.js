@@ -6,6 +6,8 @@ const morgan = require('morgan') // HTTP 요청 로깅 미들웨어
 const dotenv = require('dotenv') // 환경 변수 관리 라이브러리
 const { sequelize } = require('./models') // Sequelize를 통해 데이터베이스 연결
 
+const authorsRouter = require('./routes/authors')
+
 // 라우터 모듈 불러오기
 
 dotenv.config()
@@ -28,6 +30,41 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 // 라우터 연결
+
+
+// 1번, GET, POST, PATCH, DELETE를 공통으로쓰고 book, author 2가지 동적으로 내보내기
+const RESTFul = ['GET', 'POST', 'PATCH', 'DELETE']
+
+RESTFul.forEach((method) => {
+    app.use(`/${method}/:path`,(req, res, next) => {
+        const path = req.params.path
+
+        if (path === 'author') {
+            authorsRouter(req, res, next)            
+        } else if (path === 'book') {
+            BooksRouter(req, res, next)
+        } else {
+            res.status(404).send('잘못된 경로입니다.')
+        }        
+    });
+});
+
+
+
+
+
+
+// RESTful 메서드 배열
+// const RESTFul = ['GET', 'POST', 'PATCH', 'DELETE'];
+
+// 동적으로 라우터 연결
+// RESTFul.forEach((method) => {
+//    app.use(`/${method}/아우터`, authorRouter);
+//    app.use(`/${method}/북`, bookRouter);
+// });
+
+
+
 
 // 404 에러 처리 미들웨어
 app.use((req, res, next) => {

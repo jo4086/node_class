@@ -1,6 +1,10 @@
 const Sequelize = require('sequelize')
+
 const Author = require('./author')
 const Book = require('./book')
+const User = require('./user')
+const Profile = require('./profile')
+
 const dotenv = require('dotenv')
 
 const env = process.env.NODE_ENV || 'development'
@@ -18,13 +22,20 @@ db.sequelize = sequelize
 db.Book = Book
 db.Author = Author
 
+db.Profile = Profile
+db.User = User
+
 // 모델 초기화 및 데이터베이스와 연결
 Book.init(sequelize)
 Author.init(sequelize)
 
+Profile.init(sequelize)
+User.init(sequelize)
 // 모델 관계 설정
 Book.associate(db)
 Author.associate(db)
 
+Profile.associate(db)
+User.associate(db)
 // db 객체를 모듈로 내보내 다른파일에 사용하게 설정
 module.exports = db
