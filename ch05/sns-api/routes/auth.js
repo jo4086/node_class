@@ -1,7 +1,11 @@
 const express = require('express')
+const passport = require('passport')
 const router = express.Router()
 const bcrypt = require('bcrypt')
+
 const User = require('../models/user')
+const {isLoggedIn, isNotLoggedIn} = require('./middlewares')
+
 
 router.get('/', async (req, res, next) => {
    res.status(200).json({message: 'auth페이지에 어서오세요'})
@@ -9,7 +13,7 @@ router.get('/', async (req, res, next) => {
 // 회원가입
 
 router
-   .post('/join', async (req, res, next) => {
+   .post('/join', isNotLoggedIn, async (req, res, next) => {
       const { email, nick, password } = req.body
       try {
          const exUser = await User.findOne({ where: { email } })
@@ -46,6 +50,79 @@ router
          next(error)
       }
    })
+
+router.post('/login', isNotLoggedIn, async (req, res, next) => {
+    passport.authenticate('local', (authError, user, info) => {
+        if (authError) {
+            // 로그인 인증 중 에러 발생시
+            return res.status(500).json({
+                success: false,
+                message: '인증 중 오류 발생',
+                error: authError,
+            })
+        }
+
+        if (!user) {
+            // 비밀번호 불일치 or 사용자가 없을 경우 info.message로 메세지 전달
+            return res.status(401).json({
+                success: false,
+                message: info.message || '로그인 실패',
+            })
+        }
+
+        // 인증이 성공 => 사용자를 로그인 상태로 변경
+        // req.[login] : Passport.js에서 제공하는 메서드, 사용자가 인증되었을 때, 해당 사용자를 세션에 저장하거나 쿠키를 설정하는데 사용
+        req.login(user, (loginError) => {
+            if (loginError) {
+                // 로그인 상태 변경 중 오류 발생
+                return res.status(500).json({
+                    success: false,
+                    message: '로그인 중 오류 발생',
+                    error: loginError,
+                })
+            }
+
+            // 로그인 성공시 user객체와 함께 response
+            res.json({
+                success: true,
+                message: '로그인 성공',
+                user: {
+                    id: user.id,
+                    nick: user.nick,
+                },
+            })
+        })
+    })(req, res, next)
+})
+
+// 로그아웃 localhost:8000/auth/logout
+router.get('/logout', isLoggedIn, async (req, res, next) => {
+   // 사용자를 로그아웃 상태로
+   req.logout((err) => {
+       if (err) {
+           // 로그아웃중 상태로 바꾸는 중 에러 처리
+           console.log(err)
+
+           return res.status(500).json({
+               success: false,
+               message: '로그아웃 중 에러 발생',
+               error: err,
+           })
+       }
+
+       // 로그아웃 성공시 세션에 저장된 사용자 id 삭제,, 아래 결과를 response
+       // status code를 주지 않으면 기본값은 200(성공)임.
+       res.json({
+           success: true,
+           message: '로그아웃에 성공했습니다.',
+       })
+   })
+})
+
+// 로그인 상태 확인 localhost:8000/auth/status
+router.get('/status', async (req, res, next) => {})
+
+module.exports = router
 
 /*
 router.post('/join', async (req, res, next) => {
@@ -91,13 +168,4 @@ router.post('/join', async (req, res, next) => {
 
 */
 
-// 로그인 localhost:8000/auth/login
-router.post('/login', async (req, res, next) => {})
 
-// 로그아웃 localhost:8000/auth/logout
-router.get('/logout', async (req, res) => {})
-
-// 로그인 상태 확인 localhost:8000/
-router.get('/status', async (req, res) => {})
-
-module.exports = router
