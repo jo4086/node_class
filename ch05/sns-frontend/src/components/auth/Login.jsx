@@ -1,12 +1,12 @@
 import React, { useState, useMemo, useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { TextField, Button, Container, Typography, CircularProgress } from '@mui/material'
-import { loginUserThunk } from '../../features/authSlice'
 import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { loginUserThunk } from '../../features/authSlice'
 
 const Login = () => {
-    const [email, setEmail] = useState('') // 이메일 상태
-    const [password, setPassword] = useState('') // 비밀번호 상태
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { loading, error } = useSelector((state) => state.auth)

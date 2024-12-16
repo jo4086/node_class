@@ -17,3 +17,11 @@
       - Node.js 서버 측 : `http://localhost:3000`,
     
     => en rudfhrk ekfmamfh dpfj
+
+
+
+### 백엔드(SNS-api)
+
+### routes/
+- post.js : 글쓰기 수정 삭제 조회기능
+   - multer를 사용하여 이미지 업로드도 가능하게 할 것

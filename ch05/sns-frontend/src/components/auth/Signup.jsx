@@ -31,7 +31,7 @@ const Signup = () => {
             .catch((error) => {
                 console.error('회원가입 중 에러: ', error)
             })
-    }, [dispatch, email, nick, password, confirmPassword]) // 의조넝 배열에 필요한 값 추가
+    }, [dispatch, email, nick, password, confirmPassword]) // 의존성 배열에 필요한 값 추가
 
     // 회원가입 완료 될 때
     if (isSignupComplete) {

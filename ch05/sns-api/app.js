@@ -3,28 +3,22 @@ const path = require('path')
 const cookieParser = require('cookie-parser')
 const morgan = require('morgan')
 const session = require('express-session')
-const passport = require('passport') // 인증 미들웨
-// const https = require('https')
-// const fs = require('fs')
+const passport = require('passport')
+require('dotenv').config()
+const cors = require('cors')
 
-require('dotenv').config() // 환경변수 관리
-const cors = require('cors') // cors 미들웨어 -> api 서버의 필수 라이브러리
 
 // 라우터 및 기타 모듈 불러오기
 const { sequelize } = require('./models')
 const indexRouter = require('./routes')
 const authRouter = require('./routes/auth')
-const passportConfig = require('./passport') // Passport 설정
+const postRouter = require('./routes/post')
+const passportConfig = require('./passport')
 
 const app = express()
-passportConfig() // Passport 설정 실행
-
+passportConfig()
 app.set('port', process.env.PORT || 8002)
 
-// const options = {
-//   key: fs.readFileSync('./ssl/key.pem'),
-//   cert: fs.readFileSync('./ssl/cert.pem')
-// }
 
 // 시퀄라이즈를 사용한 DB 연결
 sequelize
@@ -73,6 +67,7 @@ app.use(passport.session()) //Passport와 생성해둔 세션 연결
 // 라우터 등록
 app.use('/', indexRouter)
 app.use('/auth', authRouter)
+app.use('/post', postRouter)
 
 // 잘못된 라우터 경로 처리
 app.use((req, res, next) => {
@@ -87,6 +82,9 @@ app.use((err, req, res, next) => {
     const statusCode = err.status || 500
     const errorMessage = err.message || '서버 내부 오류'
 
+    // 개발 중에 콘솔에서 에러 확인용
+    console.log(err)
+
     res.status(statusCode).json({
         success: false,
         message: errorMessage,
@@ -94,7 +92,7 @@ app.use((err, req, res, next) => {
     })
 })
 
-// app.options('*', cors()) // 모든 경로에 대한 options 요청을 허용
+app.options('*', cors()) // 모든 경로에 대한 options 요청을 허용
 app.listen(app.get('port'), () => {
     console.log(app.get('port'), '번 포트에서 대기중')
 })

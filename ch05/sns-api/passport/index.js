@@ -16,7 +16,17 @@ module.exports = () => {
     passport.deserializeUser((id, done) => {
         User.findOne({
             where: { id },
-            /*     
+        })
+            .then((user) => done(null, user)) // 사용자 정보 복구 후 done()으로 사용자 정보 반환
+            .catch((error) => done(error)) // 에러 발생 시 done()으로 에러 반환
+    })
+
+    // 로컬 전략(Local Strategy) 초기화
+    local() // LocalStrategy.js 파일의 함수를 실행하여 Passport에 local 전략 추가
+}
+
+
+ /*     
             include: [
                 {
                     model: User,
@@ -30,11 +40,3 @@ module.exports = () => {
                 },
             ],
             */
-        })
-            .then((user) => done(null, user)) // 사용자 정보 복구 후 done()으로 사용자 정보 반환
-            .catch((error) => done(error)) // 에러 발생 시 done()으로 에러 반환
-    })
-
-    // 로컬 전략(Local Strategy) 초기화
-    local() // LocalStrategy.js 파일의 함수를 실행하여 Passport에 local 전략 추가
-}

@@ -8,7 +8,7 @@ exports.isLoggedIn = (req, res, next) => {
         // 인증되지 않은 경우 403 상태와 에러 메시지 반환
         res.status(403).json({
             success: false,
-            message: '로그인이 필요합니다.'
+            message: '로그인이 필요합니다.',
         })
     }
 }
@@ -23,7 +23,7 @@ exports.isNotLoggedIn = (req, res, next) => {
         // 이미 인증된 경우 400 상태와 에러 메시지 상태 반환
         res.status(400).json({
             success: false,
-            message: '이미 로그인된 상태입니다.'
+            message: '이미 로그인된 상태입니다.',
         })
     }
 }

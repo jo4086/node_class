@@ -1,7 +1,6 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
-// const User = require('../models/user')
 const User = require('../models/user')
 
 // 로그인 시 사용자 정보를 DB에 조회하고 비밀번호 존재 여부와 비밀번호를 비교,, passport에 결과를 전달
