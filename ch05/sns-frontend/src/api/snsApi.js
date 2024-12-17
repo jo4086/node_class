@@ -67,3 +67,74 @@ export const checkAuthStatus = async () => {
         throw error
     }
 }
+
+// 포스트 등록
+export const createPost = async (postData) => {
+    try {
+        // postData: 포스트 데이터가 담긴 JSON 객체
+
+        const config= {
+            headers: {
+                'Content-Type': 'multipart/form-data', // 파일 전송시 반드시 지정
+            },
+        }
+
+        const response = await snsApi.post('/post', postData, config)
+        return response
+    } catch (error) {
+        console.error(`API Request 오류: ${error.message}`)
+        throw error
+    }
+}
+
+// 포스트 수정
+export const updatePost = async (id, postData) => {
+    try {
+        // postData: 포스트 데이터가 담긴 JSON 객체
+
+        const config= {
+            headers: {
+                'Content-Type': 'multipart/form-data', // 파일 전송시 반드시 지정
+            },
+        }
+
+        const response = await snsApi.put(`/post/${id}`, postData, config)
+        return response
+    } catch (error) {
+        console.error(`API Request 오류: ${error.message}`)
+        throw error
+    }
+}
+
+// 포스트 삭제
+export const deletePost = async (id) => {
+    try {
+       const response = await snsApi.delete(`/post/${id}`)
+        return response
+    } catch (error) {
+        console.error(`API Request 오류: ${error.message}`)
+        throw error
+    }
+}
+
+// 특정 포스트 GET
+export const getPostById = async (id) => {
+    try {
+        const response = await snsApi.get(`/post/${id}`)
+        return response
+    } catch (error) {
+        console.error(`API Request 오류: ${error.message}`)
+        throw error
+    }
+}
+
+// 전체 포스트 가져오기(페이징)
+export const getPosts = async (page) => {
+    try{
+        const response = await snsApi.get(`/post?page=${page}`)
+        return response
+    } catch(error) {
+        console.error(`API Request 오류: ${error.message}`)
+        throw error
+    }
+}

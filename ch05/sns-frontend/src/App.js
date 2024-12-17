@@ -1,13 +1,15 @@
+// import SignupPage from './pages/SignupPage'
+// import PostCreatePage from './pages/PostCreatePage'
+// import LoginPage from './pages/LoginPage'
+import { useDispatch, useSelector } from 'react-redux'
 import { Route, Routes } from 'react-router-dom'
-import './styles/common.css'
-
+import React, { useEffect } from 'react'
+import { SignupPage, PostCreatePage, LoginPage } from './pages'
 import Navbar from './components/shared/Navbar'
 import Home from './pages/Home'
-import SignupPage from './pages/SignupPage'
-import LoginPage from './pages/LoginPage'
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { checkAuthStatusThunk } from './features/authSlice'
+
+import './styles/common.css'
 
 function App() {
     const dispatch = useDispatch()
@@ -25,6 +27,7 @@ function App() {
                 <Route path="/" element={<Home isAuthenticated={isAuthenticated} user={user} />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/posts/create" element={ <PostCreatePage /> } />
             </Routes>
         </>
     )
