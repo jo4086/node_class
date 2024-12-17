@@ -1,3 +1,5 @@
+// sns-frontend/src/App.js
+
 // import SignupPage from './pages/SignupPage'
 // import PostCreatePage from './pages/PostCreatePage'
 // import LoginPage from './pages/LoginPage'
@@ -14,7 +16,7 @@ import './styles/common.css'
 function App() {
     const dispatch = useDispatch()
     const { isAuthenticated, user } = useSelector((state) => state.auth)
-    
+
     //새로고침시 redux 데이터가 사라지거나 서버에서 문제 발생 가능성이 있으므로 지속적인 로그인 상태 확인을 위해 사용
     useEffect(() => {
         dispatch(checkAuthStatusThunk())
@@ -27,7 +29,7 @@ function App() {
                 <Route path="/" element={<Home isAuthenticated={isAuthenticated} user={user} />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/posts/create" element={ <PostCreatePage /> } />
+                <Route path="/posts/create" element={<PostCreatePage />} />
             </Routes>
         </>
     )

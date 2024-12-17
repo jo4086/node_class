@@ -1,3 +1,5 @@
+// sns-frontend/src/features/postSlice.js
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { createPost, updatePost, deletePost, getPostById, getPosts } from '../api/snsApi'
 

@@ -1,3 +1,5 @@
+// sns-frontend/src/post/PostItem.jsx
+
 import { Card, CardMedia, CardContent, Typography, Box, CardActions, Button, IconButton } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'

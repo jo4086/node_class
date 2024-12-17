@@ -1,5 +1,8 @@
+// sns-frontend/src/pages/Home.jsx
+
 import { Container, Typography, Pagination, Stack } from '@mui/material'
 import React, { useCallback, useState, useEffect } from 'react'
+// import { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchPostsThunk } from '../features/postSlice'
 import PostItem from '../components/post/PostItem'
@@ -8,10 +11,19 @@ const Home = ({ isAuthenticated, user }) => {
     const [page, setPage] = useState(1) // 현재 페이지
     const dispatch = useDispatch()
     const { posts, pagination, loading, error } = useSelector((state) => state.posts)
+    // const render = useRef(false)    
 
+
+    
     useEffect(() => {
         dispatch(fetchPostsThunk(page))
     }, [dispatch, page])
+
+    // if (!render.current) {
+    //     console.log(render)
+    //     render.current = true
+    //     return
+    // }
 
     // 페이지변경
     const handlePageChange = useCallback((event, value) => {
