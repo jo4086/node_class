@@ -25,6 +25,8 @@ const Home = ({ isAuthenticated, user }) => {
     //     return
     // }
 
+    console.log(page)
+    
     // 페이지변경
     const handlePageChange = useCallback((event, value) => {
         setPage(value)

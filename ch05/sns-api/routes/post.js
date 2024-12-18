@@ -22,8 +22,17 @@ const upload = multer({
             cb(null, 'uploads/') // 업로드 폴더 경로 설정
         },
         filename(req, file, cb) {
-            const ext = path.extname(file.originalname) // 확장자 추출
-            cb(null, path.basename(file.originalname, ext) + Date.now() + ext) // 파일명 설정
+            const decodedFileName = decodeURIComponent(file.originalname) //파일명 디코딩(한글 파일명 깨짐 방지)
+            const ext = path.extname(decodedFileName) //확장자 추출
+            const basename = path.basename(decodedFileName, ext) //확장자 제거한 파일명 추출
+
+            // 파일명 설정: 기존이름 + 업로드 날짜시간 + 확장자
+            // dog.jpg
+            // ex) dog + 1231342432443 + .jpg
+            cb(null, basename + Date.now() + ext)
+
+            // const ext = path.extname(file.originalname) // 확장자 추출
+            // cb(null, path.basename(file.originalname, ext) + Date.now() + ext) // 파일명 설정
         },
     }),
     limits: { fileSize: 5 * 1024 * 1024 }, // 파일 크기 5MB 제한
@@ -93,7 +102,7 @@ const postData = async (req, res, next) => {
                 UserId: req.user.id,
             },
         })
-        if (!post) {
+        if (!exPost) {
             return res.status(404).json({
                 success: false,
                 message: '게시물을 찾을 수 없습니다.',

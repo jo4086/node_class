@@ -14,9 +14,10 @@ export const createPostThunk = createAsyncThunk('posts/createPost', async (postD
 })
 
 // 2. 게시물 수정
-export const updatePostThunk = createAsyncThunk('posts/updatePost', async(data, { rejectWithValue }) => {
+export const updatePostThunk = createAsyncThunk('posts/updatePost', async (data, { rejectWithValue }) => {
     try {
-        const response = await updatePost(data)
+        const { id, postData} = data
+        const response = await updatePost(id, postData)
         return response.data.post
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || '게시물 수정 실패')
@@ -24,25 +25,24 @@ export const updatePostThunk = createAsyncThunk('posts/updatePost', async(data, 
 })
 
 // 3. 게시물 삭제
-export const deletePostThunk = createAsyncThunk('posts/deletePost', async(id, { rejectWithValue }) => {
+export const deletePostThunk = createAsyncThunk('posts/deletePost', async (id, { rejectWithValue }) => {
     try {
         const response = await deletePost(id)
-        return response.data
+        return id
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || '게시물 삭제 실패')
     }
 })
 
 // 4. 특정 id 게시물 가져오기
-export const fetchPostByIdThunk = createAsyncThunk('posts/fetchPostById', async(id, {rejectWithValue}) => {
+export const fetchPostByIdThunk = createAsyncThunk('posts/fetchPostById', async (id, { rejectWithValue }) => {
     try {
         const response = await getPostById(id)
-        return response.data.post
+        return response.data
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || `ID: ${id} 게시물 조회 실패`)
     }
 })
-
 
 // 5. 전체 게시물 가져오기
 export const fetchPostsThunk = createAsyncThunk('posts/fetchPosts', async (page, { rejectWithValue }) => {
@@ -53,7 +53,6 @@ export const fetchPostsThunk = createAsyncThunk('posts/fetchPosts', async (page,
         return rejectWithValue(error.response?.data?.message || '게시물 불러오기 실패')
     }
 })
-
 
 const postSlice = createSlice({
     name: 'posts',
@@ -66,6 +65,7 @@ const postSlice = createSlice({
     },
     reducers: {},
     extraReducers: (builder) => {
+        // 게시물 작성
         builder
             .addCase(createPostThunk.pending, (state) => {
                 state.loading = true
@@ -90,12 +90,60 @@ const postSlice = createSlice({
             .addCase(fetchPostsThunk.fulfilled, (state, action) => {
                 state.loading = false
                 state.posts = action.payload.posts
-                state.pagination = action.payload.pagination                            })
+                state.pagination = action.payload.pagination
+            })
             .addCase(fetchPostsThunk.rejected, (state, action) => {
-                state.loading = false 
+                state.loading = false
                 state.error = action.payload
             })
-    }
+
+        // 3. 게시물 삭제
+        builder
+            .addCase(deletePostThunk.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(deletePostThunk.fulfilled, (state, action) => {
+                state.loading = false
+            })
+            .addCase(deletePostThunk.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload
+            })
+
+        //4. 특정 게시물 가져오기
+        builder // fetchPostsThunk, getPosts
+            .addCase(fetchPostByIdThunk.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(fetchPostByIdThunk.fulfilled, (state, action) => {
+                state.loading = false
+                state.post = action.payload.post
+            })
+            .addCase(fetchPostByIdThunk.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload
+            })
+
+        // 5. 게시물 수정
+        builder // updatePostThunk
+            .addCase(updatePostThunk.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(updatePostThunk.fulfilled, (state, action) => {
+                state.loading = false
+                const index = state.posts.findIndex((post) => post.id === action.payload.id)
+                if (index !== -1) {
+                    state.posts[index] = action.payload // 게시물 교체
+                }
+            })
+            .addCase(updatePostThunk.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload
+            })
+    },
 })
 
 export default postSlice.reducer

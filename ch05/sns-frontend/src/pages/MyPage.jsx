@@ -1,11 +1,12 @@
-const { Container } = require("@mui/material")
+import Login from '../components/auth/Login'
+import { Container } from '@mui/material'
 
-const MyPage = () => {
+const LoginPage = () => {
     return (
-        <Container>
-            <h1>MyPage입니다.</h1>
+        <Container maxWidth="md">
+            <Login />
         </Container>
     )
 }
 
-export default MyPage
+export default LoginPage

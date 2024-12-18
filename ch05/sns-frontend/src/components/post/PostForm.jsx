@@ -1,16 +1,19 @@
 // sns-frontend/src/components/post/PostForm.jsx
 
-// import React, { useState, useCallback, useMemo } from 'react'
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import { TextField, Button, Box } from '@mui/material'
 
 // 등록, 수정 폼 컴포넌트
 const PostForm = ({ onSubmit, initialValues = {} }) => {
-    // const [imgUrl, setImgUrl] = useState(initialValues.img ? process.env.REACT_APP_API_URL + initialValues.img : '') // 이미지 경로(파일명 포함)
-    const [imgUrl, setImgUrl] = useState('')
+    const [imgUrl, setImgUrl] = useState(initialValues.img ? process.env.REACT_APP_API_URL + initialValues.img : '') // 이미지 경로(파일명 포함)
+    // const [imgUrl, setImgUrl] = useState('')
     const [imgFile, setImgFile] = useState(null) // 이미지 파일 객체
-    const [content, setContent] = useState('')
-    const [hashtags, setHashtags] = useState('')
+    const [content, setContent] = useState(initialValues.content || '') // 게시물 내용
+    const [hashtags, setHashtags] = useState(
+        initialValues.Hashtags
+            ? initialValues.Hashtags.map((tag) => `#${tag.title}`).join(' ') //해시태그 문자열을 만들어줌
+            : '',
+    ) // 해시태그 문자열로 만들어줌) : ' '
 
     /** <input type="file" /> : input의 타입='file'은  FileList를 객체를 자동으로 생성 및 반환
      ** [e.target.files]: 업로드한 파일 객체를 배열 형태로 가져옴
@@ -58,26 +61,32 @@ const PostForm = ({ onSubmit, initialValues = {} }) => {
                 return
             }
 
-            if (!hashtags.trim()) {
-                alert('해시태그를 입력하세요.')
-                return
-            }
+            // if (!hashtags.trim()) {
+            //     alert('해시태그를 입력하세요.')
+            //     return
+            // }
 
-            if (!imgFile) {
+            if (!imgFile && !initialValues.id) {
                 alert('이미지 파일을 추가하세요.')
                 return
             }
 
             const formData = new FormData()
+            if (imgFile) {
+                const encodedFile = new File([imgFile], encodeURIComponent(imgFile.name), { type: imgFile.type })
+                formData.append('img', encodedFile) //이미지 파일 추가
+            }
             formData.append('content', content) // 게시물 내용 추가
             formData.append('hashtags', hashtags) // 해시태그 추가
-            if (imgFile) formData.append('img', imgFile) // 이미지 파일 추가
+
+            // if (imgFile) formData.append('img', imgFile) // 이미지 파일 추가 ... 글씨깨짐
             onSubmit(formData) // FormData 객체를 그대로 전송
         },
-        [content, hashtags, imgFile, onSubmit],
+
+        [content, hashtags, imgFile, onSubmit, initialValues.id],
     )
 
-    // const submitButtonLabel = useMemo(() => '등록하기')
+    const submitButtonLabel = useMemo(() => (initialValues.id ? '수정하기' : '등록하기'), [initialValues.id])
 
     return (
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }} encType="multipart/form-data">
@@ -101,10 +110,21 @@ const PostForm = ({ onSubmit, initialValues = {} }) => {
 
             {/* 등록 / 수정 버튼 */}
             <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-                {/* {submitButtonLabel} */}
-                등록하기
+                {submitButtonLabel}
             </Button>
         </Box>
     )
 }
 export default PostForm
+
+/*
+initialValues = {
+    id: 1,
+    content: '하이',
+    img: '/dog41241234',
+    createdAt: 2024-10-10 02:10:10,
+    updatedAt: 2024-10-10 04:01:20,
+    User: [...],
+    Hashtag: [...]
+}
+*/
