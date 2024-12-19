@@ -1,12 +1,12 @@
-import Login from '../components/auth/Login'
 import { Container } from '@mui/material'
-
-const LoginPage = () => {
+import MyProfile from '../components/page/MyProfile'
+const MyPage = ({ auth }) => {
     return (
         <Container maxWidth="md">
-            <Login />
+            <h1>MyFeed</h1>
+            <MyProfile auth={auth} />
         </Container>
     )
 }
 
-export default LoginPage
+export default MyPage

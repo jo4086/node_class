@@ -1,9 +1,9 @@
 ## Debug Log: 게시물 업로드 실패
 
-- statusCode: `500 Internal Server Error`
-     - 서버 내부에서 오류가 발생때 반환
-- **경로**: sns-api/routes/post.js
-- **원인코드**
+-   statusCode: `500 Internal Server Error`
+    -   서버 내부에서 오류가 발생때 반환
+-   **경로**: sns-api/routes/post.js
+-   **원인코드**
 
     ```diff
     const hashtags = req.body.hashtags.match(/#[^\s#]*/g)
@@ -26,4 +26,31 @@
     => title을 titie로 오타
     +  수정코드
     where: { [title]: tag.slice(1) }
+    ```
+
+## Debug Log: 팔로우 정보 조회 실패
+
+-   **Error_Metgod**: `GET`
+-   **Error_Url**: `http://localhost:8000/page/profile/7`
+-   **Status_Code**: `500`
+-   **Response_Status_Message**: `Internal Server Error`
+
+### _에러 처리 흐름_
+
+-   **_Axios 에러 로그_**:
+
+    ```plaintext
+
+    API Request 오류: Request failed with status code 500
+
+    ```
+    ```javascript
+    // hello
+    const message = "Hello, GitHub";
+    cosole.log(message)
+    ```
+    ```java
+    // hello
+    const message = "Hello, GitHub";
+    cosole.log(message)
     ```

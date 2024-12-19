@@ -290,6 +290,7 @@ router.get('/', async (req, res) => {
         res.status(500).json({
             success: false,
             message: '게시물 리스트를 불러오는 중 오류가 발생하였습니다.',
+            error
         })
     }
 })

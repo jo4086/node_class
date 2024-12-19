@@ -16,6 +16,18 @@ module.exports = () => {
     passport.deserializeUser((id, done) => {
         User.findOne({
             where: { id },
+            include: [
+                {
+                    model: User,
+                    as: 'Followers',
+                    attributes: ['id', 'nick', 'email']
+                },
+                {
+                    model: User,
+                    as: 'Followings',
+                    attributes: ['id', 'nick', 'email']
+                }
+            ]
         })
             .then((user) => done(null, user)) // 사용자 정보 복구 후 done()으로 사용자 정보 반환
             .catch((error) => done(error)) // 에러 발생 시 done()으로 에러 반환

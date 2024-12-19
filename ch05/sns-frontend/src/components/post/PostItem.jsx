@@ -59,7 +59,7 @@ const PostItem = ({ post, isAuthenticated, user }) => {
                 {/* <br /> */}
                 {/* <Typography> {post.Hashtags.length > 0 ? post.Hashtags.map((hashtag, index) => <span key={index}>#{hashtag.title} </span>) : ''}</Typography> */}
             </CardContent>
-            <hr style={{ width: '94%', margin: '0 auto', border: 'none', borderTop:'1px solid rgba(0,0,0,0.15)' }} />
+            <hr style={{ width: '94%', margin: '0 auto', border: 'none', borderTop: '1px solid rgba(0,0,0,0.15)' }} />
             <CardActions>
                 <Button size="small" color="primary">
                     <FavoriteBorderIcon fontSize="small" />

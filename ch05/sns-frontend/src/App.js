@@ -6,9 +6,8 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { Route, Routes } from 'react-router-dom'
 import React, { useEffect } from 'react'
-import { SignupPage, PostCreatePage, LoginPage, PostEditPage } from './pages'
+import { Home, SignupPage, PostCreatePage, LoginPage, PostEditPage, MyPage } from './pages'
 import Navbar from './components/shared/Navbar'
-import Home from './pages/Home'
 import { checkAuthStatusThunk } from './features/authSlice'
 
 import './styles/common.css'
@@ -32,6 +31,8 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/posts/create" element={<PostCreatePage />} />
                 <Route path="/posts/edit/:id" element={<PostEditPage />} />
+                <Route path="/my" element={<MyPage auth={user} />} />
+                <Route path="/my/:id" element={<MyPage auth={user} />} />
             </Routes>
         </>
     )
