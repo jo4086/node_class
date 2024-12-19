@@ -30,7 +30,7 @@
 
 ## Debug Log: 팔로우 정보 조회 실패
 
--   **Error_Metgod**: `GET`
+-   **Error_Method**: `GET`
 -   **Error_Url**: `http://localhost:8000/page/profile/7`
 -   **Status_Code**: `500`
 -   **Response_Status_Message**: `Internal Server Error`
