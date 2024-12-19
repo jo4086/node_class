@@ -45,19 +45,19 @@
             include: [
                 {
                     model: User,
-    +               as: Followers,
+    -               as: Followers,
                     attributes: ['id', 'nick', 'email'],
                 },
                 {
                     model: User,
-    +               as: Followings,
+    -               as: Followings,
                     attributes: ['id', 'nick', 'email'],
                 }
             ]
         })
     ! 원인
     시퀄라이즈의 as, 별명을 붙이는 부분에 작은따옴표 처리를 하지 않음
-    수정 코드
+    + 수정 코드
     as: 'Followers',
     as: 'Followings',
     ```
