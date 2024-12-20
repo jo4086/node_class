@@ -3,6 +3,7 @@ const passport = require('passport')
 const bcrypt = require('bcrypt')
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares')
 const User = require('../models/user')
+require('dotenv').config()
 
 const router = express.Router()
 
@@ -32,7 +33,10 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
         // 이메일 중복 확인을 통과시 새로운 사용자 계정 생성
 
         //비밀번호 암호화
-        const hash = await bcrypt.hash(password, 12) // 12: salt(해시 암호화를 진행시 추가되는 임의의 데이터로 10~12 정도의 값이 권장)
+
+        const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS, 10) || 12
+
+        const hash = await bcrypt.hash(password, saltRounds) // 12: salt(해시 암호화를 진행시 추가되는 임의의 데이터로 10~12 정도의 값이 권장)
 
         //새로운 사용자 생성
         const newUser = await User.create({
