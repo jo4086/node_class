@@ -33,7 +33,7 @@ const PostForm = ({ onSubmit, initialValues = {} }) => {
         if (!file) return // 파일이 없을 경우 함수 종료
 
         setImgFile(file) // 업로드한 파일 객체를 state에 저장
-
+        console.log('file: ', file)
         /** [FileReader()]: 자바스크립트에서 제공하는 함수
          * file을 비동기적으로 읽을 수 있도록 해주는 객체
          * 주로 이미지 미리보기 or 텍스트 읽기 등에 사용
@@ -75,6 +75,7 @@ const PostForm = ({ onSubmit, initialValues = {} }) => {
             if (imgFile) {
                 const encodedFile = new File([imgFile], encodeURIComponent(imgFile.name), { type: imgFile.type })
                 formData.append('img', encodedFile) //이미지 파일 추가
+                console.log('imgFile: ', encodedFile)
             }
             formData.append('content', content) // 게시물 내용 추가
             formData.append('hashtags', hashtags) // 해시태그 추가
