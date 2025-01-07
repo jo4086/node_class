@@ -1,14 +1,14 @@
 {
     "name": "shopmax-api",
     "version": "1.0.0",
+    "description": "shopmax api 서버",
     "main": "app.js",
     "scripts": {
-        "start": "nodemon app.js",
+        "start": "nodemon app",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "author": "",
+    "author": "haseo",
     "license": "ISC",
-    "description": "shopmax 서버",
     "dependencies": {
         "bcrypt": "^5.1.1",
         "cookie-parser": "^1.4.7",
