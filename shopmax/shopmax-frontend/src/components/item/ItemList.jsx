@@ -7,16 +7,16 @@ import { Link as RouterLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 function ItemList() {
-   return (
-      <Box sx={{ p: 4 }}>
-         {/* 등록버튼 */}
-         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-            <RouterLink to="/items/create">
-               <Button variant="contained">상품등록</Button>
-            </RouterLink>
-         </Box>
-      </Box>
-   )
+    return (
+        <Box sx={{ p: 4 }}>
+            {/* 등록버튼 */}
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+                <RouterLink to="/items/create">
+                    <Button variant="contained">상품등록</Button>
+                </RouterLink>
+            </Box>
+        </Box>
+    )
 }
 
 export default ItemList

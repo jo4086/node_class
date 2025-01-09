@@ -18,8 +18,8 @@ const { sequelize } = require('./models')
 const passportConfig = require('./passport')
 
 const app = express()
-app.set('port', process.env.PORT || 8002)
 passportConfig()
+app.set('port', process.env.PORT || 8002)
 
 // 시퀄라이즈를 사용한 DB연결
 sequelize
@@ -59,7 +59,6 @@ app.use(sessionMiddleware)
 //Passport 초기화, 세션 연동
 app.use(passport.initialize())
 app.use(passport.session())
-
 
 //라우터 등록
 app.use('/', indexRouter)
