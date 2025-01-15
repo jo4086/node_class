@@ -12,6 +12,10 @@ module.exports = class OrderItem extends Sequelize.Model {
                type: Sequelize.INTEGER,
                allowNull: false,
             },
+            price: {
+               type: Sequelize.INTEGER,
+               allowNull: false,
+            }
          },
          {
             sequelize,

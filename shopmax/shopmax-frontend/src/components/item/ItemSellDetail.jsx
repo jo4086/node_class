@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid2'
 import { NumberInput } from '../../styles/NumberInputBasic'
 import LocalMallIcon from '@mui/icons-material/LocalMall'
 import { fetchItemByIdThunk } from '../../features/itemSlice'
+import { createOrderThunk } from '../../features/orderSlice'
 import { formatWithComma } from '../../utils/priceSet'
 
 import React, { useState, useEffect, useCallback } from 'react'
@@ -13,11 +14,51 @@ function ItemSellDetail() {
     const { id } = useParams() // item의 id
     const dispatch = useDispatch()
     const { item, error, loading } = useSelector((state) => state.items)
+    const [count, setCount] = useState(1) // 수량 저장 state
+    const [orderPrice, setOrderPrice] = useState(0)
+    const [orderComplete, setOrderComplete] = useState(false) // 주문 완료 상태
 
-    //상품 데이터 불러오기
+    // 상품 데이터 불러오기
     useEffect(() => {
         dispatch(fetchItemByIdThunk(id))
-    }, [dispatch, id])
+    }, [dispatch, id, orderComplete])
+    
+    // 수량 증가 => 총 가격 계산
+    // 처음 상세 페이지 로드시 수량이 1개일때의 총 가격상품도 보여주기위해 useEffect를 사용
+    useEffect(() => {
+        if (item) {
+            // 상품이 존재?
+            setOrderPrice(item.price * count) // 가격 * 수
+        }
+    }, [item, count])
+
+    // 수량 증가
+    const handleQuantityChange = useCallback((event, value) => {
+        setCount(value)
+    }, [])
+
+    // 상품 주문
+    const handleBuy = useCallback(() => {
+        // orderData = { items: [{ itemId: 1, count: 2 }, { itemId: 2, count: 1 }] } 형태
+        dispatch(createOrderThunk({
+            items: [
+                {
+                    itemId: `${id}`, // 상품 id
+                    count,
+                }
+            ]
+        })
+        )
+        .unwrap()
+            .then(() => {
+                alert('주문이 완료되었습니다.')
+                setOrderComplete(true) // state를 바꿔서 재랜더링 실행 => 재고 갱신
+            })
+            .catch((error) => {
+                console.error('주문 에러:', error)
+                alert(`주문 실패: ${error}`)
+            })
+    }, [dispatch, count, id])
 
     if (loading) {
         return null //아무것도 보여주지 X
@@ -65,9 +106,9 @@ function ItemSellDetail() {
                                     <Alert severity="error">품절</Alert>
                                 ) : (
                                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
-                                        <NumberInput aria-label="Demo number input" placeholder="수량" min={1} max={item.stockNumber} />
-                                        <Typography variant="h6">총 가격: 원</Typography>
-                                        <Button variant="contained" color="primary">
+                                        <NumberInput aria-label="Demo number input" value={count} placeholder="수량" min={1} max={item.stockNumber} onChange={handleQuantityChange} />
+                                        <Typography variant="h6">총 가격: {orderPrice.toLocaleString('ko-KR')} 원</Typography>
+                                        <Button variant="contained" color="primary" onClick={handleBuy}>
                                             구매하기
                                         </Button>
                                     </Box>
