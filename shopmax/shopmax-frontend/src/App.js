@@ -16,7 +16,9 @@ import ItemListPage from './pages/ItemListPage'
 import ItemSellDetailPage from './pages/ItemSellDetailPage'
 
 import RedirectLoginRoute from './components/auth/RedirectLoginRoute'
+import RedirectLogoutRoute from './components/auth/RedirectLogoutRoute'
 import AdminRoute from './components/auth/AdminRoute'
+import MyOrderListPage from './pages/MyOrderListPage'
 
 function App() {
     const dispatch = useDispatch()
@@ -43,6 +45,16 @@ function App() {
                         <RedirectLoginRoute>
                             <LoginPage />
                         </RedirectLoginRoute>
+                    }
+                />
+                {/* 주문 내역 */}
+                <Route
+                    path="/myorderlist"
+                    element={
+                        // 주문내역은 로그인 상태에만 보이기에 로그아웃상태면 리다이렉트
+                        <RedirectLogoutRoute>
+                            <MyOrderListPage />
+                        </RedirectLogoutRoute>
                     }
                 />
 

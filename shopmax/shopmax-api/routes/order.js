@@ -28,14 +28,14 @@ router.post('/', isLoggedIn, async (req, res) => {
 
         // 1. Order 테이블에 주문 내역 insert
         // 주문 생성
-      const order = await Order.create(
-         {
-            userId: user.id,
-            orderDate: new Date(),
-            orderStatus: 'ORDER',
-         },
-         { transaction } // Order.create, Item.findByPk, product.save, OrderItem.bulkCreate 등 모든 데이터 작업에 { transaction } 옵션을 추가하여 동일 트랜잭션 내에서 실행되도록 처리
-      )
+        const order = await Order.create(
+            {
+                userId: user.id,
+                orderDate: new Date(),
+                orderStatus: 'ORDER',
+            },
+            { transaction }, // Order.create, Item.findByPk, product.save, OrderItem.bulkCreate 등 모든 데이터 작업에 { transaction } 옵션을 추가하여 동일 트랜잭션 내에서 실행되도록 처리
+        )
 
         // 2. Item 테이블에서 재고 차감
 
@@ -56,7 +56,7 @@ router.post('/', isLoggedIn, async (req, res) => {
         **/
 
         const orderItemsData = await Promise.all(
-            items.map(async (item) => { 
+            items.map(async (item) => {
                 const { itemId, count } = item
 
                 // 1. 상품이 있는지 확인
@@ -87,7 +87,7 @@ router.post('/', isLoggedIn, async (req, res) => {
                     price: product.price,
                     count,
                 }
-            })
+            }),
         )
 
         // 3. OrderTable 테이블에 주문상품 insert
@@ -102,7 +102,6 @@ router.post('/', isLoggedIn, async (req, res) => {
             orderId: order.id, // 주문 id
             totalPrice: totalOrderPrice, // 총 주문 상품 금액
         })
-
     } catch (error) {
         await transaction.rollback() // 트랜잭션 롤백
 
@@ -110,6 +109,70 @@ router.post('/', isLoggedIn, async (req, res) => {
         res.status(500).json({
             success: false,
             message: '주문 중 오류가 발생하였습니다.',
+            error,
+        })
+    }
+})
+
+// 주문 목록(페이징)
+// localhost:8000/order/list?page=1&limit=5&startDate=2025-01-01&endDate=2025-01-16
+router.get('/list', isLoggedIn, async (req, res) => {
+    try {
+        const { query } = req
+
+        const page = parseInt(query.page, 10) || 1
+        const limit = parseInt(query.limit, 10) || 5
+        const offset = (page - 1) * limit
+        const startDate = query.startDate
+        const endDate = query.endDate
+        const endDateTime = `${endDate} 23:59:59`
+
+        const count = await Order.count({ where: { userId: req.user.id, ...(startDate && endDate ? { createdAt: { [Op.between]: [startDate, endDateTime] } } : {}) } })
+
+        // 로그인한 사람의 주문 상품 목록 가져오기
+        const orders = await Order.findAll({
+            where: {
+                userId: req.user.id,
+                ...(startDate && endDate ? { createdAt: { [Op.between]: [startDate, endDateTime] } } : {}),
+            },
+            limit: parseInt(limit),
+            offset: parseInt(offset),
+            include: [
+                {
+                    model: Item,
+                    attributes: ['id', 'itemNm', 'price'], // 필요한 데이터만 선택
+                    // 교차테이블 데이터
+                    through: {
+                        attributes: ['count', 'orderPrice'], // OrderItem 테이블에서 필요한 컬럼 선택
+                    },
+                    include: [
+                        {
+                            model: Img,
+                            attributes: ['imgUrl'],
+                            where: { repImgYn: 'Y' },
+                        },
+                    ],
+                },
+            ],
+            order: [['orderDate', 'DESC']],
+        })
+
+        res.status(200).json({
+            success: true,
+            message: '주문 목록 조회 성공',
+            orders,
+            pagination: {
+                totalOrders: count,
+                totalPages: Math.ceil(count / limit),
+                currentPage: page,
+                limit,
+            },
+        })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({
+            success: false,
+            message: '주문내역 조회 중 오류가 발생했습니다.',
             error,
         })
     }
