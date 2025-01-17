@@ -3,7 +3,7 @@ const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
 const { Op } = require('sequelize')
-const { isAdmin } = require('./middlewares')
+const { isAdmin, verifyToken } = require('./middlewares')
 const { Item, Img } = require('../models')
 const router = express.Router()
 

@@ -11,7 +11,7 @@ import 'dayjs/locale/ko' // 한글 로케일 불러오기
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getOrdersThunk } from '../../features/orderSlice'
+import { getOrdersThunk, cancelOrderThunk, deleteOrderThunk } from '../../features/orderSlice'
 
 function OrderList() {
     const dispatch = useDispatch()
@@ -24,7 +24,7 @@ function OrderList() {
     const [formattedStartDate, setFormattedStartDate] = useState('') // 시작날짜 (포맷후)
     const [formattedEndDate, setFormattedEndDate] = useState('') // 끝날짜 (포맷후)
 
-    const [cancelComplete, setCancelCopmlete] = useState(false) // 주문 취소 완료여부
+    const [cancelComplete, setCancelComplete] = useState(false) // 주문 취소 완료여부
     const [deleteComplete, setDeleteComplete] = useState(false) // 주문 삭제 완료여부
 
     useEffect(() => {
@@ -36,13 +36,45 @@ function OrderList() {
                 endDate: formattedEndDate,
             }),
         )
-    }, [page, formattedStartDate, formattedEndDate, dispatch])
+    }, [page, formattedStartDate, formattedEndDate, cancelComplete, deleteComplete, dispatch])
 
     // 주문 취소
-    const handleCancleOrder = useCallback((id) => {}, [])
+    const handleCancleOrder = useCallback((id) => {
+        const result = window.confirm('주문을 취소하겠습니까?')
+
+        if (result) {
+            dispatch(cancelOrderThunk(id))
+                .unwrap()
+                .then(() => {
+                    setCancelComplete((prev) => !prev)
+                })
+                .catch((error) => {
+                    console.error('주문 취소 실패:', error)
+                    alert(`주문 취소 실패! ${error}`)
+                })
+        } else {
+            return
+        }
+    }, [dispatch])
 
     // 주문 삭제
-    const handleDeleteOrder = useCallback((id) => {}, [])
+    const handleDeleteOrder = useCallback((id) => {
+        const result = window.confirm('주문을 삭제하겠습니까?')
+
+        if (result) {
+            dispatch(deleteOrderThunk(id))
+                .unwrap()
+                .then(() => {
+                    setDeleteComplete((prev) => !prev)
+                })
+                .catch((error) => {
+                    console.error('주문 삭제 실패:', error)
+                    alert(`주문 삭제 실패! ${error}`)
+                })
+        } else {
+            return
+        }
+    }, [dispatch])
 
     // 날짜DATA를 포맷
     const handleDateFilter = useCallback(() => {

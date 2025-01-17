@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken')
+
 // 로그인 상태 확인 미들웨어
 exports.isLoggedIn = (req, res, next) => {
    // 사용자가 로그인된 상태인지 확인
@@ -51,4 +53,31 @@ exports.isAdmin = (req, res, next) => {
          message: '로그인이 필요합니다.',
       })
    }
+}
+
+// 토큰 유효성 검사 미들웨어
+exports.verifyToken = (req, res, next) => {
+    try {
+        console.log('req.headers.authorization: ', req.headers.authorization)
+        // 토큰 검증
+        req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET)
+
+        return next()
+
+    } catch (error) {
+        console.log(error)
+
+        // 토큰 유효기간 초과
+        if (error.name === 'TokenExpiredError') {
+            return res.status(419).json({
+                success: false,
+                message: '토큰이 만료되었습니다.'
+            })
+        }
+        
+        return res.status(401).json({
+            success: false,
+            message: '유효하지 않은 토큰입니다.'
+        })
+    }
 }

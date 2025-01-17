@@ -178,4 +178,97 @@ router.get('/list', isLoggedIn, async (req, res) => {
     }
 })
 
+router.post('/cancel/:id', isLoggedIn, async (req, res) => {
+    const transaction = await sequelize.transaction()
+
+    try {
+        const { id } = req.params
+
+        // 사용자 id를 기반으로 주문내역 조회
+        const order = await Order.findByPk(id, {
+            include: [
+                {
+                    model: OrderItem,
+                    include: [{ model: Item }],
+                },
+            ],
+            transaction,
+        })
+
+        // 주문이 존재하지 않음
+        if (!order) {
+            return res.status(400).json({
+                success: false,
+                message: '주문내역이 존재하지 않습니다.',
+            })
+        }
+
+        // 이미 취소된 주문
+        if (order.orderStatus === 'CANCEL') {
+            return res.status(400).json({
+                success: false,
+                message: '이미 취소된 주문입니다.',
+            })
+        }
+
+        // 재고복구
+        for (const orderItem of order.OrderItems) {
+            const product = orderItem.Item
+            product.stockNumber += orderItem.count
+            await product.save({transaction}) // 트랜잭션
+        }
+
+        // 주문 상태 변경
+        order.orderStatus = 'CANCEL'
+        await order.save({transaction})
+
+        await transaction.commit() // 트랜잭션 커밋
+        
+        res.json({
+            success: true,
+            message: '주문이 성공적으로 취소되었습니다.'
+        })
+
+    } catch (error) {
+        await transaction.rollback() // 트랜잭션 롤백
+        console.error(error)
+        res.status(500).json({
+            success: false,
+            message: '주문 취소 중 오류가 발생했습니다.',
+            error
+        })
+    }
+})
+
+// 주문 내역 삭제
+router.delete('/delete/:id', isLoggedIn, async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const order = await Order.findByPk(id)
+
+        if (!order) {
+            return res.status(400).json({
+                success: false,
+                message: '주문 내역이 존재하지 않습니다.'
+            })
+        }
+
+        //주문삭제(CASCADE설정으로 인해 orderItem도 삭제)
+        await Order.destroy({ where: { id: order.id } })
+
+        res.json({
+            success: true,
+            message: '주문 내역 정상적으로 삭제되었습니다.'
+        })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({
+            success: false,
+            message: '주문 내역 삭제 중 오류가 발생하였습니다.',
+            error
+        })
+    }
+} )
+
 module.exports = router
