@@ -23,7 +23,7 @@ router.get('/get', isLoggedIn, async (req, res) => {
             },
         )
 
-        await Domain.Create({
+        await Domain.create({
             userId: req.user.id,
             host: origin,
             clientToken: token,

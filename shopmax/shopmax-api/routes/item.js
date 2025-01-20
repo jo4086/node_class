@@ -39,7 +39,7 @@ const upload = multer({
 
 // 상품등록 localhost:8000/item
 // upload.array(매개변수)의 매개변수 값은 input 태그의 name 값 사용, 만약 formData 사용시 formData의 key 값 사용
-router.post('/', isAdmin, upload.array('img'), async (req, res) => {
+router.post('/', isAdmin, verifyToken, upload.array('img'), async (req, res) => {
     try {
         // 업로드된 파일 확인
         if (!req.files) {
@@ -220,7 +220,7 @@ router.get('/:id', async (req, res) => {
 })
 
 // 상품 수정 localhost:8000/item/:id
-router.put('/:id', isAdmin, upload.array('img'), async (req, res) => {
+router.put('/:id', isAdmin, verifyToken, upload.array('img'), async (req, res) => {
     try {
         const { id } = req.params
         const { itemNm, price, stockNumber, itemDetail, itemSellStatus } = req.body

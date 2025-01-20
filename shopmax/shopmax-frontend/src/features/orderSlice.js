@@ -24,6 +24,7 @@ export const getOrdersThunk = createAsyncThunk('order/getOrders', async (data, {
 //주문 취소
 export const cancelOrderThunk = createAsyncThunk('order/cancelOrder', async (id, { rejectWithValue }) => {
     try {
+        // eslint-disable-next-line
         const response = await cancelOrder(id)
         return id
     } catch (error) {
@@ -34,6 +35,7 @@ export const cancelOrderThunk = createAsyncThunk('order/cancelOrder', async (id,
 //주문 삭제
 export const deleteOrderThunk = createAsyncThunk('order/deleteOrder', async (id, { rejectWithValue }) => {
     try {
+        // eslint-disable-next-line
         const response = await deleteOrder(id)
         return id
     } catch (error) {

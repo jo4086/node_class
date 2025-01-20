@@ -19,6 +19,8 @@ import RedirectLoginRoute from './components/auth/RedirectLoginRoute'
 import RedirectLogoutRoute from './components/auth/RedirectLogoutRoute'
 import AdminRoute from './components/auth/AdminRoute'
 import MyOrderListPage from './pages/MyOrderListPage'
+import TokenPage from './pages/TokenPage'
+import ChatPage from './pages/ChatPage'
 
 function App() {
     const dispatch = useDispatch()
@@ -86,6 +88,24 @@ function App() {
                         <AdminRoute>
                             <ItemListPage />
                         </AdminRoute>
+                    }
+                />
+                {/* 토큰 발금 페이지 */}
+                <Route
+                    path="/token"
+                    element={
+                        <AdminRoute>
+                            <TokenPage />
+                        </AdminRoute>
+                    }
+                />
+                {/* 채팅 페이지 */}
+                <Route
+                    path="/chat"
+                    element={
+                        <RedirectLogoutRoute>
+                            <ChatPage />
+                        </RedirectLogoutRoute>
                     }
                 />
             </Routes>
